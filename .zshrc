@@ -25,3 +25,12 @@ bindkey '^[[Z' autosuggest-accept
 #
 # Example aliases
 alias bye="shutdown now"
+
+uv-lock-all() {
+  local root f
+  root=$(git rev-parse --show-toplevel) || return
+  for f in $(git -C "$root" ls-files ':(glob)**/uv.lock'); do
+    echo "==> $(dirname "$f")"
+    uv lock --directory "$root/$(dirname "$f")" || return
+  done
+}
